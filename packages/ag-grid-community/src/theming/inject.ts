@@ -53,7 +53,24 @@ export const _injectGlobalCSS = (
         const index = injections.indexOf(insertAfter);
         injections.splice(index + 1, 0, newInjection);
     } else {
-        styleContainer.insertBefore(el, styleContainer.querySelector(':not(title, meta)'));
+        //styleContainer.insertBefore(el, styleContainer.querySelector(':not(title, meta)'));
+        //injections.push(newInjection);
+        // 修改代码，去掉not这种css语法，这种语法旧的浏览器无法识别
+        let insertBefore: Element | null = null;
+        let current = styleContainer.firstElementChild;
+        while (current) {
+            if (current.tagName !== 'TITLE' && current.tagName !== 'META') {
+                insertBefore = current;
+                break;
+            }
+            current = current.nextElementSibling;
+        }
+        
+        if (insertBefore) {
+            styleContainer.insertBefore(el, insertBefore);
+        } else {
+            styleContainer.appendChild(el);
+        }
         injections.push(newInjection);
     }
 };
